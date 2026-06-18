@@ -125,6 +125,8 @@
     overflow: hidden; display: flex; flex-direction: column;
   }
   .site:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgba(26,23,20,.07), 0 14px 32px rgba(26,23,20,.09); border-color: var(--rule); }
+  .site-photo { height: 130px; background-size: cover; background-position: center; background-color: var(--paper-line); border-bottom: 1px solid var(--paper-line); position: relative; }
+  .site-photo::after { content:""; position:absolute; inset:0; background: linear-gradient(to bottom, rgba(26,23,20,0) 55%, rgba(26,23,20,.18)); }
   .site .top { padding: 18px 18px 14px; border-bottom: 1px dashed var(--rule); }
   .site .nm { font-family: 'Fraunces', serif; font-weight: 600; font-size: 18px; line-height: 1.2; margin-bottom: 3px; }
   .site .loc { font-size: 12.5px; color: var(--ink-faint); display: flex; align-items: center; gap: 5px; }
@@ -319,6 +321,21 @@ let INCOME = [
 ];
 const INCOME_CATEGORIES = ["Rent","Deposit","Late Fee","Parking","Laundry","Other"];
 
+/* ---------- generic property photos (auto-assigned by position) ---------- */
+const SITE_PHOTOS = [
+  "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=70",
+  "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=600&q=70",
+  "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=600&q=70",
+  "https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=600&q=70",
+  "https://images.unsplash.com/photo-1554995207-c18c203602cb?auto=format&fit=crop&w=600&q=70",
+  "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=600&q=70",
+  "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=70",
+  "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=600&q=70",
+  "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=600&q=70",
+  "https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?auto=format&fit=crop&w=600&q=70",
+];
+const photoFor = (idx) => SITE_PHOTOS[idx % SITE_PHOTOS.length];
+
 let view = { name:"dashboard", siteId:null };
 function go(name, siteId=null){ view={name,siteId}; render(); window.scrollTo(0,0); }
 
@@ -376,16 +393,17 @@ function renderDashboard(){
 
     <div class="sec-head"><h2>Properties</h2><span class="count">${SITES.length} active</span></div>
     <div class="grid">
-      ${SITES.map(siteCard).join("")}
+      ${SITES.map((s,idx)=>siteCard(s,idx)).join("")}
       <div class="add-site" onclick="openSiteModal()"><div class="plus">+</div><div>Add a property</div></div>
     </div>
   `;
 }
 
-function siteCard(s){
+function siteCard(s, idx){
   const exp = siteTotal(s.id), inc = siteIncome(s.id), unpaid = siteUnpaid(s.id);
   const net = inc - exp;
   return `<div class="site" onclick="go('site','${s.id}')">
+    <div class="site-photo" style="background-image:url('${photoFor(idx||0)}')"></div>
     <div class="top">
       <div class="nm">${esc(s.name)}</div>
       <div class="loc">${icon('pin')} ${esc(s.location||"—")}</div>
@@ -398,7 +416,6 @@ function siteCard(s){
     </div>
   </div>`;
 }
-
 let siteSearch="", siteFilter="all", siteTab="bills";
 function renderSite(){
   const s = siteById(view.siteId);
