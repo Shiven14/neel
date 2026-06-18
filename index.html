@@ -406,7 +406,7 @@ function siteCard(s, idx){
     <div class="site-photo" style="background-image:url('${photoFor(idx||0)}')"></div>
     <div class="top">
       <div class="nm">${esc(s.name)}</div>
-      <div class="loc">${icon('pin')} ${esc(s.location||"—")}</div>
+      <div class="loc">${esc(s.location||"—")}</div>
     </div>
     <div class="body">
       <div class="tot"><small>Net · in ${fmtK(inc)} / out ${fmtK(exp)}</small><span class="num" style="color:${net>=0?'var(--green)':'var(--red)'}">${net<0?'−':''}${fmt(Math.abs(net))}</span></div>
