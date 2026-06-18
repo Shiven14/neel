@@ -636,11 +636,29 @@ function openBillModal(siteId, billId=null){
   }
 
   const kind = (f.type==="application/pdf"||f.name.toLowerCase().endsWith(".pdf")) ? "pdf" : "image";
+
+  // Compress images before storing (keeps PDFs untouched)
+  if(kind==="image"){
+    try { f = await compressImage(f); } catch(e){ console.error("compress failed, using original", e); }
+  }
+
   const r = new FileReader();
   r.onload = e => { pendingPdf = { name:f.name, data:e.target.result, kind, file:f }; };
   r.readAsDataURL(f);
   drop.classList.add('has');
   txt.innerHTML = icon('file')+' '+esc(f.name);
+}
+  async function compressImage(file, maxW=1600, quality=0.7){
+  const dataUrl = await new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(file); });
+  const img = await new Promise((res,rej)=>{ const im=new Image(); im.onload=()=>res(im); im.onerror=rej; im.src=dataUrl; });
+  let { width, height } = img;
+  if(width > maxW){ height = Math.round(height * maxW / width); width = maxW; }
+  const canvas = document.createElement('canvas');
+  canvas.width = width; canvas.height = height;
+  canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+  const blob = await new Promise(res => canvas.toBlob(res, 'image/jpeg', quality));
+  if(!blob || blob.size >= file.size) return file; // keep original if compression didn't help
+  return new File([blob], file.name.replace(/\.(png|heic|heif|webp)$/i,'.jpg'), { type:'image/jpeg' });
 }
 async function saveBill(siteId, billId){
   const vendor=document.getElementById('bVendor').value.trim();
