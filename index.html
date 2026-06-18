@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ledger — Real Estate Expenses</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;450;500;600&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
+<style>
+  :root {
+    --ink: #1a1714;
+    --ink-soft: #4a423b;
+    --ink-faint: #8a7f74;
+    --paper: #f4efe6;
+    --paper-card: #fbf8f1;
+    --paper-line: #e4dccd;
+    --rule: #d8cdb9;
+    --brass: #a9712b;
+    --brass-deep: #855618;
+    --green: #3f6b4a;
+    --green-bg: #e6efe5;
+    --red: #9c3a2e;
+    --red-bg: #f2e3df;
+    --amber-bg: #f3ead3;
+    --amber-tx: #876418;
+    --shadow: 0 1px 2px rgba(26,23,20,.06), 0 8px 24px rgba(26,23,20,.05);
+    --radius: 3px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.5;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+    background-image: linear-gradient(var(--paper-line) 1px, transparent 1px);
+    background-size: 100% 2.4rem;
+    background-position: 0 -1px;
+  }
+  .num { font-family: 'JetBrains Mono', monospace; font-feature-settings: "tnum"; font-variant-numeric: tabular-nums; }
+  .serif { font-family: 'Fraunces', Georgia, serif; }
+
+  /* ---------- top bar ---------- */
+  header {
+    background: var(--ink);
+    color: var(--paper);
+    border-bottom: 3px solid var(--brass);
+    position: sticky; top: 0; z-index: 40;
+  }
+  .bar {
+    max-width: 1180px; margin: 0 auto; padding: 0 24px;
+    height: 64px; display: flex; align-items: center; gap: 18px;
+  }
+  .logo { display: flex; align-items: baseline; gap: 10px; cursor: pointer; }
+  .logo .mark {
+    font-family: 'Fraunces', serif; font-weight: 600; font-size: 22px;
+    color: var(--paper); letter-spacing: .3px;
+  }
+  .logo .mark b { color: var(--brass); font-weight: 600; }
+  .logo .sub {
+    font-family: 'JetBrains Mono', monospace; font-size: 10.5px;
+    text-transform: uppercase; letter-spacing: 2px; color: #b6a995;
+  }
+  .crumbs { margin-left: 6px; display: flex; align-items: center; gap: 8px; font-size: 13px; color: #b6a995; }
+  .crumbs a { color: #d8cebc; cursor: pointer; text-decoration: none; }
+  .crumbs a:hover { color: var(--paper); text-decoration: underline; }
+  .crumbs .sep { opacity: .5; }
+  .spacer { flex: 1; }
+  .conn {
+    display: flex; align-items: center; gap: 7px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: #c8bba6; padding: 5px 11px; border: 1px solid #3a342d; border-radius: 999px;
+    cursor: pointer; transition: border-color .15s;
+  }
+  .conn:hover { border-color: var(--brass); }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--amber-tx); box-shadow: 0 0 0 3px rgba(135,100,24,.2); }
+  .dot.live { background: #6fae7a; box-shadow: 0 0 0 3px rgba(111,174,122,.2); }
+
+  /* ---------- layout ---------- */
+  main { max-width: 1180px; margin: 0 auto; padding: 34px 24px 80px; }
+  .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: 26px; flex-wrap: wrap; }
+  h1.title { font-family: 'Fraunces', serif; font-weight: 600; font-size: 34px; letter-spacing: -.4px; line-height: 1.1; }
+  .eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 2.5px; color: var(--brass-deep); margin-bottom: 8px; }
+  .lede { color: var(--ink-soft); font-size: 14.5px; margin-top: 6px; max-width: 60ch; }
+
+  /* ---------- buttons ---------- */
+  .btn {
+    font-family: 'Inter', sans-serif; font-weight: 500; font-size: 14px;
+    padding: 9px 16px; border-radius: var(--radius); border: 1px solid transparent;
+    cursor: pointer; transition: all .14s; display: inline-flex; align-items: center; gap: 7px;
+    white-space: nowrap;
+  }
+  .btn-primary { background: var(--brass); color: #fff; border-color: var(--brass-deep); box-shadow: var(--shadow); }
+  .btn-primary:hover { background: var(--brass-deep); }
+  .btn-ghost { background: transparent; color: var(--ink-soft); border-color: var(--rule); }
+  .btn-ghost:hover { border-color: var(--ink-faint); background: var(--paper-card); }
+  .btn-sm { padding: 6px 11px; font-size: 13px; }
+  .btn .ic { width: 15px; height: 15px; stroke-width: 2; }
+
+  /* ---------- stat strip ---------- */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-bottom: 30px;
+    background: var(--paper-card); border: 1px solid var(--paper-line); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+  .stat { padding: 18px 20px; border-right: 1px solid var(--paper-line); position: relative; }
+  .stat:last-child { border-right: none; }
+  .stat .k { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--ink-faint); margin-bottom: 8px; }
+  .stat .v { font-family: 'JetBrains Mono', monospace; font-size: 25px; font-weight: 600; letter-spacing: -.5px; }
+  .stat .v.pos { color: var(--ink); }
+  .stat .v.due { color: var(--red); }
+  .stat .v.paid { color: var(--green); }
+  .stat .meta { font-size: 12px; color: var(--ink-faint); margin-top: 4px; }
+  .stat::after { content:""; position:absolute; left:20px; bottom:0; width:24px; height:3px; background: var(--brass); opacity:.55; }
+
+  /* ---------- section heading ---------- */
+  .sec-head { display: flex; align-items: baseline; justify-content: space-between; margin: 0 0 14px; gap: 12px; }
+  .sec-head h2 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 19px; }
+  .sec-head .count { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--ink-faint); }
+
+  /* ---------- site cards ---------- */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap: 16px; }
+  .site {
+    background: var(--paper-card); border: 1px solid var(--paper-line); border-radius: var(--radius);
+    padding: 0; box-shadow: var(--shadow); cursor: pointer; transition: transform .14s, box-shadow .14s, border-color .14s;
+    overflow: hidden; display: flex; flex-direction: column;
+  }
+  .site:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgba(26,23,20,.07), 0 14px 32px rgba(26,23,20,.09); border-color: var(--rule); }
+  .site .top { padding: 18px 18px 14px; border-bottom: 1px dashed var(--rule); }
+  .site .nm { font-family: 'Fraunces', serif; font-weight: 600; font-size: 18px; line-height: 1.2; margin-bottom: 3px; }
+  .site .loc { font-size: 12.5px; color: var(--ink-faint); display: flex; align-items: center; gap: 5px; }
+  .site .body { padding: 14px 18px 16px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .site .tot { font-family: 'JetBrains Mono', monospace; font-size: 21px; font-weight: 600; }
+  .site .tot small { display:block; font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--ink-faint); font-weight: 400; margin-bottom: 2px; font-family:'JetBrains Mono'; }
+  .site .pills { display: flex; flex-direction: column; gap: 5px; align-items: flex-end; }
+  .pill { font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 2px 8px; border-radius: 999px; font-weight: 500; }
+  .pill.due { background: var(--red-bg); color: var(--red); }
+  .pill.ok { background: var(--green-bg); color: var(--green); }
+  .add-site {
+    border: 1.5px dashed var(--rule); background: transparent; border-radius: var(--radius);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+    cursor: pointer; color: var(--ink-faint); min-height: 150px; transition: all .14s; font-weight: 500;
+  }
+  .add-site:hover { border-color: var(--brass); color: var(--brass-deep); background: var(--paper-card); }
+  .add-site .plus { font-size: 26px; line-height: 1; }
+
+  /* ---------- table ---------- */
+  .ledger-wrap { background: var(--paper-card); border: 1px solid var(--paper-line); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+  .toolbar { display: flex; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--paper-line); align-items: center; flex-wrap: wrap; }
+  .search { flex: 1; min-width: 180px; position: relative; }
+  .search input {
+    width: 100%; padding: 8px 12px 8px 34px; border: 1px solid var(--rule); border-radius: var(--radius);
+    background: var(--paper); font-family: 'Inter'; font-size: 14px; color: var(--ink);
+  }
+  .search input:focus { outline: none; border-color: var(--brass); }
+  .search svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: var(--ink-faint); }
+  select.filter { padding: 8px 12px; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--paper); font-family: 'Inter'; font-size: 14px; color: var(--ink-soft); cursor: pointer; }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    font-family: 'JetBrains Mono', monospace; font-size: 10.5px; text-transform: uppercase; letter-spacing: 1.2px;
+    color: var(--ink-faint); text-align: left; padding: 11px 16px; border-bottom: 2px solid var(--rule); font-weight: 500; background: var(--paper);
+  }
+  thead th.r { text-align: right; }
+  tbody td { padding: 13px 16px; border-bottom: 1px solid var(--paper-line); font-size: 14px; vertical-align: middle; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr { transition: background .1s; }
+  tbody tr:hover { background: #f6f1e6; }
+  .vendor { font-weight: 500; }
+  .cat-tag { font-family: 'JetBrains Mono'; font-size: 11px; padding: 2px 8px; border-radius: 3px; background: var(--amber-bg); color: var(--amber-tx); white-space: nowrap; }
+  td.amt { font-family: 'JetBrains Mono', monospace; text-align: right; font-weight: 600; font-size: 14.5px; }
+  .status-chip { display:inline-flex; align-items:center; gap:5px; font-family:'JetBrains Mono'; font-size:11.5px; font-weight:500; padding: 3px 9px; border-radius: 999px; cursor: pointer; border: 1px solid transparent; }
+  .status-chip.paid { background: var(--green-bg); color: var(--green); }
+  .status-chip.unpaid { background: var(--red-bg); color: var(--red); }
+  .status-chip:hover { border-color: currentColor; }
+  .pdf-link { display:inline-flex; align-items:center; gap:5px; color: var(--brass-deep); cursor:pointer; font-size:13px; font-weight:500; }
+  .pdf-link:hover { text-decoration: underline; }
+  .pdf-none { color: var(--ink-faint); font-size: 12.5px; }
+  .row-act { color: var(--ink-faint); cursor: pointer; padding: 4px; border-radius: 3px; }
+  .row-act:hover { color: var(--red); background: var(--red-bg); }
+
+  /* ---------- empty ---------- */
+  .empty { text-align: center; padding: 60px 20px; color: var(--ink-faint); }
+  .empty .serif { font-size: 20px; color: var(--ink-soft); margin-bottom: 6px; }
+
+  /* ---------- modal ---------- */
+  .overlay { position: fixed; inset: 0; background: rgba(26,23,20,.45); backdrop-filter: blur(2px); z-index: 60; display: flex; align-items: flex-start; justify-content: center; padding: 40px 18px; overflow-y: auto; }
+  .modal { background: var(--paper-card); border-radius: var(--radius); box-shadow: 0 20px 60px rgba(0,0,0,.3); width: 100%; max-width: 540px; border: 1px solid var(--paper-line); overflow: hidden; }
+  .modal-head { padding: 20px 24px; border-bottom: 1px solid var(--paper-line); display:flex; justify-content:space-between; align-items:center; }
+  .modal-head h3 { font-family:'Fraunces',serif; font-weight:600; font-size: 20px; }
+  .modal-head .x { cursor:pointer; color: var(--ink-faint); font-size: 22px; line-height: 1; padding: 2px 6px; border-radius: 3px; }
+  .modal-head .x:hover { background: var(--paper-line); color: var(--ink); }
+  .modal-body { padding: 22px 24px; }
+  .field { margin-bottom: 16px; }
+  .field.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  label { display:block; font-family:'JetBrains Mono'; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-soft); margin-bottom: 6px; font-weight: 500; }
+  input.fld, select.fld, textarea.fld {
+    width: 100%; padding: 9px 12px; border: 1px solid var(--rule); border-radius: var(--radius);
+    background: var(--paper); font-family: 'Inter'; font-size: 14.5px; color: var(--ink);
+  }
+  input.fld.num-in { font-family:'JetBrains Mono'; }
+  textarea.fld { resize: vertical; min-height: 60px; font-family:'Inter'; }
+  input.fld:focus, select.fld:focus, textarea.fld:focus { outline: none; border-color: var(--brass); box-shadow: 0 0 0 3px rgba(169,113,43,.12); }
+  .file-drop {
+    border: 1.5px dashed var(--rule); border-radius: var(--radius); padding: 16px; text-align: center;
+    cursor: pointer; color: var(--ink-faint); font-size: 13.5px; transition: all .14s;
+  }
+  .file-drop:hover { border-color: var(--brass); color: var(--brass-deep); }
+  .file-drop.has { border-style: solid; border-color: var(--green); color: var(--green); background: var(--green-bg); }
+  .modal-foot { padding: 16px 24px; border-top: 1px solid var(--paper-line); display:flex; justify-content:flex-end; gap: 10px; background: var(--paper); }
+
+  .banner {
+    background: var(--amber-bg); border: 1px solid #e0d2ad; border-left: 3px solid var(--amber-tx);
+    border-radius: var(--radius); padding: 12px 16px; margin-bottom: 24px; font-size: 13.5px; color: #6e5414;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .banner b { color: var(--amber-tx); }
+  .banner .lnk { color: var(--brass-deep); text-decoration: underline; cursor: pointer; font-weight:500; }
+
+  /* ---------- password gate ---------- */
+  .gate {
+    position: fixed; inset: 0; z-index: 100; background: var(--ink);
+    display: flex; align-items: center; justify-content: center; padding: 24px;
+    background-image: linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px);
+    background-size: 100% 2.4rem;
+  }
+  .gate-card {
+    background: var(--paper-card); border: 1px solid #2a241e; border-top: 3px solid var(--brass);
+    border-radius: var(--radius); box-shadow: 0 24px 70px rgba(0,0,0,.5);
+    width: 100%; max-width: 360px; padding: 38px 34px 34px; text-align: center;
+  }
+  .gate-mark { font-family:'Fraunces',serif; font-weight:600; font-size: 32px; color: var(--ink); letter-spacing:.3px; }
+  .gate-mark b { color: var(--brass); }
+  .gate-sub { font-family:'JetBrains Mono',monospace; font-size: 10.5px; text-transform: uppercase; letter-spacing: 3px; color: var(--ink-faint); margin: 4px 0 28px; }
+  .gate-in {
+    width: 100%; padding: 11px 14px; border: 1px solid var(--rule); border-radius: var(--radius);
+    background: var(--paper); font-family:'Inter'; font-size: 15px; color: var(--ink); text-align: center; letter-spacing: 1px;
+  }
+  .gate-in:focus { outline: none; border-color: var(--brass); box-shadow: 0 0 0 3px rgba(169,113,43,.15); }
+  .gate-btn { width: 100%; justify-content: center; margin-top: 14px; padding: 11px; }
+  .gate-err { color: var(--red); font-size: 13px; margin-top: 14px; font-family:'JetBrains Mono'; }
+
+  @media (max-width: 760px) {
+    .stats { grid-template-columns: 1fr 1fr; }
+    .stat:nth-child(2) { border-right: none; }
+    .stat:nth-child(1), .stat:nth-child(2) { border-bottom: 1px solid var(--paper-line); }
+    .bar { gap: 10px; padding: 0 16px; }
+    .crumbs { display: none; }
+    .conn .ct { display: none; }
+    h1.title { font-size: 27px; }
+    main { padding: 24px 16px 60px; }
+    .col-hide { display: none; }
+    .field.row2 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div id="gate" class="gate"></div>
+<header>
+  <div class="bar">
+    <div class="logo" onclick="go('dashboard')">
+      <span class="mark">Led<b>ger</b></span>
+      <span class="sub">Estate&nbsp;Books</span>
+    </div>
+    <div class="crumbs" id="crumbs"></div>
+    <div class="spacer"></div>
+    <div class="conn" id="connBtn" onclick="openConn()">
+      <span class="dot" id="connDot"></span>
+      <span class="ct" id="connText">Demo data</span>
+    </div>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<div id="modalRoot"></div>
+
+<script>
+/* ============================================================
+   CONFIG — paste your Supabase values here to go live.
+   Leave blank to run on in-browser demo data.
+   ============================================================ */
+const SUPABASE_URL = "https://qmglwnxxavvefmzsbdal.supabase.co";
+const SUPABASE_KEY = "sb_publishable_-lsn287_j9UrnoVpO_GGNg_oOM-Bi8h";
+
+/* ---- Simple password gate. Change this to whatever you want. ----
+   Leave as "" to disable the gate entirely. Note: this keeps casual
+   visitors out, but is not strong security on its own.            */
+const APP_PASSWORD = "changeme";
+/* ============================================================ */
+
+const LIVE = !!(SUPABASE_URL && SUPABASE_KEY);
+let sb = null;
+if (LIVE) { try { sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch(e){ console.error(e); } }
+
+const CATEGORIES = ["Materials","Labor","Utilities","Permits & Fees","Maintenance","Insurance","Property Tax","Professional Services","Other"];
+const fmt = n => "$" + (Number(n)||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtK = n => { n=Number(n)||0; return n>=1000 ? "$"+(n/1000).toFixed(n>=10000?0:1)+"k" : fmt(n); };
+const today = () => new Date().toISOString().slice(0,10);
+const dfmt = d => d ? new Date(d+"T00:00:00").toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}) : "—";
+const uid = () => Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+
+/* ---------- demo store (in-memory; swapped for Supabase when LIVE) ---------- */
+let SITES = [
+  { id:"s1", name:"Maple Court Apartments", location:"Philadelphia, PA" },
+  { id:"s2", name:"Riverside Duplex", location:"Camden, NJ" },
+  { id:"s3", name:"Walnut St. Storefront", location:"Philadelphia, PA" },
+];
+let BILLS = [
+  { id:"b1", site_id:"s1", vendor:"Keystone Plumbing", category:"Maintenance", amount:1840.00, issue_date:"2026-05-22", due_date:"2026-06-21", status:"unpaid", notes:"Unit 4B water heater replacement", pdf_name:"keystone-inv-3391.pdf", pdf_kind:"pdf" },
+  { id:"b2", site_id:"s1", vendor:"PECO Energy", category:"Utilities", amount:612.45, issue_date:"2026-06-01", due_date:"2026-06-18", status:"unpaid", notes:"Common area electric", pdf_name:"peco-june.jpg", pdf_kind:"image" },
+  { id:"b3", site_id:"s1", vendor:"GreenLawn Co.", category:"Maintenance", amount:280.00, issue_date:"2026-05-10", due_date:"2026-05-25", status:"paid", notes:"", pdf_name:"", pdf_kind:"" },
+  { id:"b4", site_id:"s2", vendor:"City of Camden", category:"Permits & Fees", amount:425.00, issue_date:"2026-05-30", due_date:"2026-06-30", status:"unpaid", notes:"Rental license renewal", pdf_name:"camden-permit.pdf", pdf_kind:"pdf" },
+  { id:"b5", site_id:"s2", vendor:"Allied Roofing", category:"Materials", amount:7320.00, issue_date:"2026-04-15", due_date:"2026-05-15", status:"paid", notes:"Full roof — shingles + labor", pdf_name:"allied-final.pdf", pdf_kind:"pdf" },
+  { id:"b6", site_id:"s3", vendor:"Hartford Insurance", category:"Insurance", amount:1150.00, issue_date:"2026-06-05", due_date:"2026-07-05", status:"unpaid", notes:"Annual commercial policy", pdf_name:"hartford-policy.pdf", pdf_kind:"pdf" },
+  { id:"b7", site_id:"s3", vendor:"Marsh Electric", category:"Labor", amount:960.00, issue_date:"2026-05-18", due_date:"2026-06-02", status:"paid", notes:"Panel upgrade", pdf_name:"", pdf_kind:"" },
+];
+
+/* ---------- navigation ---------- */
+let view = { name:"dashboard", siteId:null };
+function go(name, siteId=null){ view={name,siteId}; render(); window.scrollTo(0,0); }
+
+/* ---------- derived ---------- */
+const billsFor = sid => BILLS.filter(b=>b.site_id===sid);
+const siteTotal = sid => billsFor(sid).reduce((s,b)=>s+Number(b.amount),0);
+const siteUnpaid = sid => billsFor(sid).filter(b=>b.status==="unpaid").reduce((s,b)=>s+Number(b.amount),0);
+const siteById = id => SITES.find(s=>s.id===id);
+
+/* ---------- render ---------- */
+const app = document.getElementById("app");
+function render(){
+  renderCrumbs();
+  if(view.name==="dashboard") renderDashboard();
+  else if(view.name==="site") renderSite();
+}
+
+function renderCrumbs(){
+  const c = document.getElementById("crumbs");
+  if(view.name==="site"){
+    const s = siteById(view.siteId);
+    c.innerHTML = `<a onclick="go('dashboard')">All sites</a><span class="sep">/</span><span>${esc(s?s.name:"")}</span>`;
+  } else c.innerHTML = "";
+}
+
+function renderDashboard(){
+  const total = BILLS.reduce((s,b)=>s+Number(b.amount),0);
+  const due = BILLS.filter(b=>b.status==="unpaid").reduce((s,b)=>s+Number(b.amount),0);
+  const paid = total-due;
+  const overdue = BILLS.filter(b=>b.status==="unpaid" && b.due_date < today());
+
+  app.innerHTML = `
+    ${LIVE ? "" : demoBanner()}
+    <div class="page-head">
+      <div>
+        <div class="eyebrow">Portfolio overview</div>
+        <h1 class="title">The Books</h1>
+        <div class="lede">Every bill across every property, kept in one ledger.</div>
+      </div>
+      <button class="btn btn-primary" onclick="openSiteModal()">${icon('plus')} New site</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="k">Total booked</div><div class="v pos num">${fmt(total)}</div><div class="meta">${BILLS.length} bills · ${SITES.length} sites</div></div>
+      <div class="stat"><div class="k">Outstanding</div><div class="v due num">${fmt(due)}</div><div class="meta">${overdue.length} overdue</div></div>
+      <div class="stat"><div class="k">Paid</div><div class="v paid num">${fmt(paid)}</div><div class="meta">${BILLS.filter(b=>b.status==='paid').length} settled</div></div>
+      <div class="stat"><div class="k">Avg / site</div><div class="v pos num">${fmtK(SITES.length?total/SITES.length:0)}</div><div class="meta">across portfolio</div></div>
+    </div>
+
+    <div class="sec-head"><h2>Properties</h2><span class="count">${SITES.length} active</span></div>
+    <div class="grid">
+      ${SITES.map(siteCard).join("")}
+      <div class="add-site" onclick="openSiteModal()"><div class="plus">+</div><div>Add a property</div></div>
+    </div>
+  `;
+}
+
+function siteCard(s){
+  const total = siteTotal(s.id), unpaid = siteUnpaid(s.id), n = billsFor(s.id).length;
+  return `<div class="site" onclick="go('site','${s.id}')">
+    <div class="top">
+      <div class="nm">${esc(s.name)}</div>
+      <div class="loc">${icon('pin')} ${esc(s.location||"—")}</div>
+    </div>
+    <div class="body">
+      <div class="tot"><small>Booked · ${n} bills</small><span class="num">${fmt(total)}</span></div>
+      <div class="pills">
+        ${unpaid>0 ? `<span class="pill due">${fmt(unpaid)} due</span>` : `<span class="pill ok">all settled</span>`}
+      </div>
+    </div>
+  </div>`;
+}
+
+let siteSearch="", siteFilter="all";
+function renderSite(){
+  const s = siteById(view.siteId);
+  if(!s){ go('dashboard'); return; }
+  let rows = billsFor(s.id);
+  const total = rows.reduce((a,b)=>a+Number(b.amount),0);
+  const due = rows.filter(b=>b.status==='unpaid').reduce((a,b)=>a+Number(b.amount),0);
+
+  if(siteFilter!=="all") rows = rows.filter(b=> siteFilter==="unpaid"?b.status==="unpaid":b.status==="paid");
+  if(siteSearch) { const q=siteSearch.toLowerCase(); rows = rows.filter(b=> (b.vendor+b.category+b.notes).toLowerCase().includes(q)); }
+  rows = rows.slice().sort((a,b)=> (b.issue_date||"").localeCompare(a.issue_date||""));
+
+  app.innerHTML = `
+    <div class="page-head">
+      <div>
+        <div class="eyebrow">${esc(s.location||"Property")}</div>
+        <h1 class="title">${esc(s.name)}</h1>
+        <div class="lede">${billsFor(s.id).length} bills on file · ${fmt(total)} booked · <span style="color:var(--red)">${fmt(due)} outstanding</span></div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-ghost btn-sm" onclick="openSiteModal('${s.id}')">${icon('edit')} Edit site</button>
+        <button class="btn btn-primary" onclick="openBillModal('${s.id}')">${icon('plus')} New bill</button>
+      </div>
+    </div>
+
+    <div class="ledger-wrap">
+      <div class="toolbar">
+        <div class="search">${icon('search')}<input placeholder="Search vendor, category, notes…" value="${esc(siteSearch)}" oninput="siteSearch=this.value;renderSite()" /></div>
+        <select class="filter" onchange="siteFilter=this.value;renderSite()">
+          <option value="all"${siteFilter==='all'?' selected':''}>All bills</option>
+          <option value="unpaid"${siteFilter==='unpaid'?' selected':''}>Unpaid only</option>
+          <option value="paid"${siteFilter==='paid'?' selected':''}>Paid only</option>
+        </select>
+      </div>
+      ${rows.length ? `
+      <table>
+        <thead><tr>
+          <th>Vendor</th><th class="col-hide">Category</th><th>Issued</th><th class="col-hide">Due</th>
+          <th class="r">Amount</th><th>Status</th><th class="col-hide">Bill</th><th></th>
+        </tr></thead>
+        <tbody>${rows.map(billRow).join("")}</tbody>
+      </table>` : `<div class="empty"><div class="serif">No bills here yet</div><div>Add the first bill for this property.</div></div>`}
+    </div>
+  `;
+}
+
+function billRow(b){
+  const overdue = b.status==="unpaid" && b.due_date < today();
+  return `<tr>
+    <td><div class="vendor">${esc(b.vendor)}</div>${b.notes?`<div style="font-size:12px;color:var(--ink-faint);margin-top:2px">${esc(b.notes)}</div>`:""}</td>
+    <td class="col-hide"><span class="cat-tag">${esc(b.category)}</span></td>
+    <td class="num" style="font-size:13px;color:var(--ink-soft)">${dfmt(b.issue_date)}</td>
+    <td class="col-hide num" style="font-size:13px;color:${overdue?'var(--red)':'var(--ink-soft)'}">${dfmt(b.due_date)}${overdue?' ⚠':''}</td>
+    <td class="amt">${fmt(b.amount)}</td>
+    <td><span class="status-chip ${b.status}" onclick="toggleStatus('${b.id}')">${b.status==='paid'?icon('check'):icon('clock')} ${b.status}</span></td>
+    <td class="col-hide">${b.pdf_name?`<span class="pdf-link" onclick="openPdf('${b.id}')">${icon(b.pdf_kind==='image'?'image':'file')} ${b.pdf_kind==='image'?'Photo':'View'}</span>`:`<span class="pdf-none">—</span>`}</td>
+    <td><span class="row-act" onclick="editBill('${b.id}')" title="Edit">${icon('edit')}</span> <span class="row-act" onclick="delBill('${b.id}')" title="Delete">${icon('trash')}</span></td>
+  </tr>`;
+}
+
+/* ---------- actions ---------- */
+async function toggleStatus(id){
+  const b = BILLS.find(x=>x.id===id); if(!b) return;
+  b.status = b.status==="paid"?"unpaid":"paid";
+  if(LIVE) await sb.from('bills').update({status:b.status}).eq('id',id);
+  render();
+}
+function editBill(id){ openBillModal(BILLS.find(b=>b.id===id).site_id, id); }
+async function delBill(id){
+  if(!confirm("Delete this bill? This can't be undone.")) return;
+  BILLS = BILLS.filter(b=>b.id!==id);
+  if(LIVE) await sb.from('bills').delete().eq('id',id);
+  render();
+}
+async function openPdf(id){
+  const b = BILLS.find(x=>x.id===id);
+  if(!b) return;
+  if(LIVE && b.pdf_path){
+    const { data } = sb.storage.from('bills').getPublicUrl(b.pdf_path);
+    if(data && data.publicUrl){ openViewer(data.publicUrl, b.pdf_kind, b.pdf_name); return; }
+  }
+  if(b._pdfData){ openViewer(b._pdfData, b.pdf_kind, b.pdf_name); return; }
+  alert("In demo mode this is a placeholder.\nFile on record: "+(b.pdf_name||"none")+"\n\nWhen connected to Supabase, the actual file opens here.");
+}
+function openViewer(url, kind, name){
+  const isImg = kind==="image" || /\.(jpe?g|png|gif|webp)$/i.test(name||url);
+  const w = window.open();
+  if(!w){ window.location.href=url; return; }
+  const body = isImg
+    ? `<img src="${url}" style="max-width:100%;height:auto;display:block;margin:0 auto" />`
+    : `<iframe src="${url}" style="border:0;width:100%;height:100vh"></iframe>`;
+  w.document.write(`<title>${esc(name||'Bill')}</title><body style="margin:0;background:#1a1714">${body}</body>`);
+}
+
+/* ---------- modals ---------- */
+const mRoot = document.getElementById("modalRoot");
+function closeModal(){ mRoot.innerHTML=""; }
+function openSiteModal(id=null){
+  const s = id?siteById(id):null;
+  mRoot.innerHTML = `<div class="overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+      <div class="modal-head"><h3>${s?'Edit property':'New property'}</h3><span class="x" onclick="closeModal()">×</span></div>
+      <div class="modal-body">
+        <div class="field"><label>Property name</label><input class="fld" id="sName" placeholder="e.g. Maple Court Apartments" value="${s?esc(s.name):''}" /></div>
+        <div class="field"><label>Location</label><input class="fld" id="sLoc" placeholder="City, State" value="${s?esc(s.location||''):''}" /></div>
+      </div>
+      <div class="modal-foot">
+        ${s?`<button class="btn btn-ghost" onclick="delSite('${s.id}')" style="margin-right:auto;color:var(--red)">${icon('trash')} Delete</button>`:''}
+        <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveSite('${id||''}')">${s?'Save changes':'Create site'}</button>
+      </div>
+    </div></div>`;
+  setTimeout(()=>document.getElementById('sName').focus(),50);
+}
+async function saveSite(id){
+  const name=document.getElementById('sName').value.trim();
+  const location=document.getElementById('sLoc').value.trim();
+  if(!name){ alert("Give the property a name."); return; }
+  if(id){ const s=siteById(id); s.name=name; s.location=location; if(LIVE) await sb.from('sites').update({name,location}).eq('id',id); }
+  else { const ns={id:uid(),name,location}; SITES.push(ns); if(LIVE){ const {data}=await sb.from('sites').insert({name,location}).select().single(); if(data) ns.id=data.id; } }
+  closeModal(); render();
+}
+async function delSite(id){
+  if(!confirm("Delete this property and ALL its bills?")) return;
+  SITES=SITES.filter(s=>s.id!==id); BILLS=BILLS.filter(b=>b.site_id!==id);
+  if(LIVE){ await sb.from('bills').delete().eq('site_id',id); await sb.from('sites').delete().eq('id',id); }
+  closeModal(); go('dashboard');
+}
+
+let pendingPdf = null;
+function openBillModal(siteId, billId=null){
+  pendingPdf = null;
+  const b = billId?BILLS.find(x=>x.id===billId):null;
+  mRoot.innerHTML = `<div class="overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+      <div class="modal-head"><h3>${b?'Edit bill':'New bill'}</h3><span class="x" onclick="closeModal()">×</span></div>
+      <div class="modal-body">
+        <div class="field"><label>Vendor</label><input class="fld" id="bVendor" placeholder="Who issued the bill" value="${b?esc(b.vendor):''}" /></div>
+        <div class="field row2">
+          <div><label>Amount</label><input class="fld num-in" id="bAmount" inputmode="decimal" placeholder="0.00" value="${b?b.amount:''}" /></div>
+          <div><label>Category</label><select class="fld" id="bCat">${CATEGORIES.map(c=>`<option${b&&b.category===c?' selected':''}>${c}</option>`).join('')}</select></div>
+        </div>
+        <div class="field row2">
+          <div><label>Issue date</label><input class="fld" type="date" id="bIssue" value="${b?b.issue_date:today()}" /></div>
+          <div><label>Due date</label><input class="fld" type="date" id="bDue" value="${b?b.due_date:''}" /></div>
+        </div>
+        <div class="field"><label>Status</label>
+          <select class="fld" id="bStatus"><option value="unpaid"${b&&b.status==='unpaid'?' selected':''}>Unpaid</option><option value="paid"${b&&b.status==='paid'?' selected':''}>Paid</option></select>
+        </div>
+        <div class="field"><label>Notes</label><textarea class="fld" id="bNotes" placeholder="Optional — what was this for?">${b?esc(b.notes||''):''}</textarea></div>
+        <div class="field"><label>Bill — PDF or photo</label>
+          <div class="file-drop ${b&&b.pdf_name?'has':''}" id="drop" onclick="document.getElementById('pdfIn').click()">
+            <span id="dropTxt">${b&&b.pdf_name?icon('file')+' '+esc(b.pdf_name)+' — click to replace':'Click to attach a PDF, JPG or HEIC photo'}</span>
+          </div>
+          <input type="file" id="pdfIn" accept="application/pdf,image/jpeg,image/jpg,image/png,image/heic,image/heif,.heic,.heif" style="display:none" onchange="handlePdf(this)" />
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveBill('${siteId}','${billId||''}')">${b?'Save changes':'Add bill'}</button>
+      </div>
+    </div></div>`;
+  setTimeout(()=>document.getElementById('bVendor').focus(),50);
+}
+async function handlePdf(inp){
+  let f = inp.files[0]; if(!f) return;
+  const name = f.name.toLowerCase();
+  const isHeic = f.type==="image/heic" || f.type==="image/heif" || name.endsWith(".heic") || name.endsWith(".heif");
+  const isPdf = f.type==="application/pdf" || name.endsWith(".pdf");
+  const isImg = f.type.startsWith("image/") || /\.(jpe?g|png)$/.test(name);
+  if(!isPdf && !isImg && !isHeic){ alert("Please attach a PDF, JPG, PNG or HEIC file."); return; }
+
+  const drop = document.getElementById('drop');
+  const txt = document.getElementById('dropTxt');
+
+  // HEIC -> JPG conversion (iPhone photos don't display in most browsers)
+  if(isHeic){
+    txt.innerHTML = "Converting iPhone photo…";
+    try {
+      const blob = await heic2any({ blob:f, toType:"image/jpeg", quality:0.85 });
+      const out = Array.isArray(blob)?blob[0]:blob;
+      f = new File([out], f.name.replace(/\.(heic|heif)$/i,".jpg"), { type:"image/jpeg" });
+    } catch(e){
+      console.error(e); alert("Couldn't convert that HEIC photo. Try exporting it as JPG from Photos, or attach a different file."); 
+      txt.innerHTML = "Click to attach a PDF, JPG or HEIC photo"; return;
+    }
+  }
+
+  const kind = (f.type==="application/pdf"||f.name.toLowerCase().endsWith(".pdf")) ? "pdf" : "image";
+  const r = new FileReader();
+  r.onload = e => { pendingPdf = { name:f.name, data:e.target.result, kind, file:f }; };
+  r.readAsDataURL(f);
+  drop.classList.add('has');
+  txt.innerHTML = icon('file')+' '+esc(f.name);
+}
+async function saveBill(siteId, billId){
+  const vendor=document.getElementById('bVendor').value.trim();
+  const amount=parseFloat(document.getElementById('bAmount').value)||0;
+  if(!vendor){ alert("Enter a vendor."); return; }
+  if(amount<=0){ alert("Enter an amount."); return; }
+  const rec = {
+    site_id:siteId, vendor,
+    amount, category:document.getElementById('bCat').value,
+    issue_date:document.getElementById('bIssue').value||today(),
+    due_date:document.getElementById('bDue').value||"",
+    status:document.getElementById('bStatus').value,
+    notes:document.getElementById('bNotes').value.trim(),
+  };
+
+  // Upload attachment to Supabase storage if one was added
+  let uploadedPath = null;
+  if(pendingPdf){
+    rec.pdf_name = pendingPdf.name;
+    rec.pdf_kind = pendingPdf.kind;
+    if(LIVE && pendingPdf.file){
+      const ext = pendingPdf.name.split('.').pop();
+      const path = `${siteId}/${uid()}.${ext}`;
+      const { error } = await sb.storage.from('bills').upload(path, pendingPdf.file, { upsert:true });
+      if(error){ alert("File upload failed: "+error.message); }
+      else { rec.pdf_path = path; uploadedPath = path; }
+    }
+  }
+
+  if(billId){
+    const b=BILLS.find(x=>x.id===billId); Object.assign(b,rec);
+    if(pendingPdf){ b._pdfData=pendingPdf.data; b.pdf_kind=pendingPdf.kind; if(uploadedPath) b.pdf_path=uploadedPath; }
+    if(LIVE) await sb.from('bills').update(rec).eq('id',billId);
+  } else {
+    const nb={id:uid(),...rec, pdf_name:pendingPdf?pendingPdf.name:"", pdf_kind:pendingPdf?pendingPdf.kind:""};
+    if(pendingPdf) nb._pdfData=pendingPdf.data;
+    BILLS.push(nb);
+    if(LIVE){ const {data}=await sb.from('bills').insert(rec).select().single(); if(data) nb.id=data.id; }
+  }
+  closeModal(); render();
+}
+
+/* ---------- connection panel ---------- */
+function openConn(){
+  mRoot.innerHTML = `<div class="overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal" style="max-width:480px">
+      <div class="modal-head"><h3>${LIVE?'Connected':'Demo mode'}</h3><span class="x" onclick="closeModal()">×</span></div>
+      <div class="modal-body" style="font-size:14px;color:var(--ink-soft);line-height:1.6">
+        ${LIVE
+          ? `<p>You're live on Supabase. Sites, bills and PDFs save to your cloud project and sync to any browser.</p>`
+          : `<p>Right now the app runs on <b>sample data</b> so you can try every feature. Nothing is saved permanently yet.</p>
+             <p style="margin-top:12px">To make it real on any browser, create a free Supabase project and paste two values into the top of this file:</p>
+             <div style="background:var(--paper);border:1px solid var(--rule);border-radius:3px;padding:12px;margin-top:10px;font-family:'JetBrains Mono';font-size:12.5px">SUPABASE_URL = "…"<br>SUPABASE_KEY = "…"</div>
+             <p style="margin-top:12px;font-size:13px;color:var(--ink-faint)">I'll walk you through the setup when you're ready.</p>`}
+      </div>
+      <div class="modal-foot"><button class="btn btn-primary" onclick="closeModal()">Got it</button></div>
+    </div></div>`;
+}
+function demoBanner(){
+  return `<div class="banner">${icon('info')}
+    <div><b>Demo mode.</b> You're looking at sample data so you can click around. Everything works — adding sites, bills, PDFs, marking paid. To save permanently across any browser, <span class="lnk" onclick="openConn()">connect Supabase</span>.</div>
+  </div>`;
+}
+
+/* ---------- icons ---------- */
+function icon(n){
+  const p = {
+    plus:'<path d="M12 5v14M5 12h14"/>',
+    pin:'<path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/>',
+    search:'<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>',
+    check:'<path d="M20 6 9 17l-5-5"/>',
+    clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>',
+    file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',
+    image:'<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/>',
+    edit:'<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"/>',
+    trash:'<path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>',
+    info:'<circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/>',
+  }[n]||'';
+  return `<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+}
+function esc(s){ return (s||"").toString().replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+/* ---------- load live data if connected ---------- */
+async function boot(){
+  document.getElementById('connDot').classList.toggle('live', LIVE);
+  document.getElementById('connText').textContent = LIVE ? "Connected" : "Demo data";
+  if(LIVE){
+    try {
+      const {data:sites} = await sb.from('sites').select('*').order('name');
+      const {data:bills} = await sb.from('bills').select('*');
+      if(sites) SITES=sites; if(bills) BILLS=bills;
+    } catch(e){ console.error("Supabase load failed:",e); }
+  }
+  render();
+}
+
+/* ---------- password gate ---------- */
+function lockScreen(msg){
+  document.getElementById('gate').innerHTML = `
+    <div class="gate-card">
+      <div class="gate-mark">Led<b>ger</b></div>
+      <div class="gate-sub">Estate Books</div>
+      <input type="password" id="gatePw" class="gate-in" placeholder="Enter password" autocomplete="current-password"
+        onkeydown="if(event.key==='Enter')tryUnlock()" />
+      <button class="btn btn-primary gate-btn" onclick="tryUnlock()">Unlock</button>
+      ${msg?`<div class="gate-err">${msg}</div>`:''}
+    </div>`;
+  setTimeout(()=>{ const i=document.getElementById('gatePw'); if(i) i.focus(); },60);
+}
+function tryUnlock(){
+  const v = document.getElementById('gatePw').value;
+  if(v === APP_PASSWORD){
+    try { sessionStorage.setItem('ledger_ok','1'); } catch(e){}
+    document.getElementById('gate').style.display='none';
+    boot();
+  } else {
+    lockScreen("That's not the password.");
+  }
+}
+function startApp(){
+  let unlocked = false;
+  try { unlocked = sessionStorage.getItem('ledger_ok')==='1'; } catch(e){}
+  if(!APP_PASSWORD || unlocked){
+    document.getElementById('gate').style.display='none';
+    boot();
+  } else {
+    lockScreen("");
+  }
+}
+startApp();
+</script>
+</body>
+</html>
