@@ -698,7 +698,7 @@ function billRow(b){
     <td class="col-hide num" style="font-size:13px;color:${overdue?'var(--red)':'var(--ink-soft)'}">${dfmt(b.due_date)}${overdue?' ⚠':''}</td>
     <td class="amt">${fmt(b.amount)}</td>
     <td><span class="status-chip ${b.status}" onclick="toggleStatus('${b.id}')">${b.status==='paid'?icon('check'):icon('clock')} ${b.status}</span></td>
-    <td class="col-hide">${b.pdf_name?`<span class="pdf-link" onclick="openPdf('${b.id}')">${icon(b.pdf_kind==='image'?'image':'file')} ${b.pdf_kind==='image'?'Photo':'View'}</span>`:`<span class="pdf-none">—</span>`}</td>
+    <td class="col-hide">${b.pdf_name?`<span class="pdf-link" onclick="openPdf('${b.id}')">${icon(b.pdf_kind==='image'?'image':'file')} ${b.pdf_kind==='image'?'Photo':'View'}</span> <span class="pdf-link" onclick="downloadBill('${b.id}')" title="Download" style="margin-left:8px">${icon('download')}</span>`:`<span class="pdf-none">—</span>`}</td>
     <td><span class="row-act" onclick="editBill('${b.id}')" title="Edit">${icon('edit')}</span> <span class="row-act" onclick="delBill('${b.id}')" title="Delete">${icon('trash')}</span></td>
   </tr>`;
 }
@@ -737,6 +737,29 @@ function openViewer(url, kind, name){
     ? `<img src="${url}" style="max-width:100%;height:auto;display:block;margin:0 auto" />`
     : `<iframe src="${url}" style="border:0;width:100%;height:100vh"></iframe>`;
   w.document.write(`<title>${esc(name||'Bill')}</title><body style="margin:0;background:#1a1714">${body}</body>`);
+}
+async function downloadBill(id){
+  const b = BILLS.find(x=>x.id===id);
+  if(!b || !b.pdf_name){ alert("No file attached to this bill."); return; }
+  // Live: download from Supabase storage
+  if(LIVE && b.pdf_path){
+    try {
+      const { data, error } = await sb.storage.from('bills').download(b.pdf_path);
+      if(error){ alert("Download failed: "+error.message); return; }
+      const url = URL.createObjectURL(data);
+      const a = document.createElement('a');
+      a.href = url; a.download = b.pdf_name; a.click();
+      setTimeout(()=>URL.revokeObjectURL(url), 1500);
+      return;
+    } catch(e){ alert("Download error: "+e.message); return; }
+  }
+  // Demo / in-memory: download the data URL if present
+  if(b._pdfData){
+    const a = document.createElement('a');
+    a.href = b._pdfData; a.download = b.pdf_name; a.click();
+    return;
+  }
+  alert("This file is only available once connected to Supabase.");
 }
 
 /* ---------- modals ---------- */
