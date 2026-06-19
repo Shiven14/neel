@@ -45,6 +45,7 @@
   .num { font-family: 'JetBrains Mono', monospace; font-feature-settings: "tnum"; font-variant-numeric: tabular-nums; }
   .serif { font-family: 'Fraunces', Georgia, serif; }
 
+  /* ---------- top bar ---------- */
   header {
     background: var(--ink);
     color: var(--paper);
@@ -83,12 +84,14 @@
   .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--amber-tx); box-shadow: 0 0 0 3px rgba(135,100,24,.2); }
   .dot.live { background: #6fae7a; box-shadow: 0 0 0 3px rgba(111,174,122,.2); }
 
+  /* ---------- layout ---------- */
   main { max-width: 1180px; margin: 0 auto; padding: 34px 24px 80px; }
   .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: 26px; flex-wrap: wrap; }
   h1.title { font-family: 'Fraunces', serif; font-weight: 600; font-size: 34px; letter-spacing: -.4px; line-height: 1.1; }
   .eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 2.5px; color: var(--brass-deep); margin-bottom: 8px; }
   .lede { color: var(--ink-soft); font-size: 14.5px; margin-top: 6px; max-width: 60ch; }
 
+  /* ---------- buttons ---------- */
   .btn {
     font-family: 'Inter', sans-serif; font-weight: 500; font-size: 14px;
     padding: 9px 16px; border-radius: var(--radius); border: 1px solid transparent;
@@ -102,6 +105,7 @@
   .btn-sm { padding: 6px 11px; font-size: 13px; }
   .btn .ic { width: 15px; height: 15px; stroke-width: 2; }
 
+  /* ---------- stat strip ---------- */
   .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-bottom: 30px;
     background: var(--paper-card); border: 1px solid var(--paper-line); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
   .stat { padding: 18px 20px; border-right: 1px solid var(--paper-line); position: relative; }
@@ -114,10 +118,12 @@
   .stat .meta { font-size: 12px; color: var(--ink-faint); margin-top: 4px; }
   .stat::after { content:""; position:absolute; left:20px; bottom:0; width:24px; height:3px; background: var(--brass); opacity:.55; }
 
+  /* ---------- section heading ---------- */
   .sec-head { display: flex; align-items: baseline; justify-content: space-between; margin: 0 0 14px; gap: 12px; }
   .sec-head h2 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 19px; }
   .sec-head .count { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--ink-faint); }
 
+  /* ---------- site cards ---------- */
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap: 16px; }
   .site {
     background: var(--paper-card); border: 1px solid var(--paper-line); border-radius: var(--radius);
@@ -145,11 +151,13 @@
   .add-site:hover { border-color: var(--brass); color: var(--brass-deep); background: var(--paper-card); }
   .add-site .plus { font-size: 26px; line-height: 1; }
 
+  /* ---------- tabs ---------- */
   .tabs { display: flex; gap: 4px; margin-bottom: 16px; border-bottom: 2px solid var(--rule); }
   .tab { font-family:'JetBrains Mono',monospace; font-size: 12.5px; text-transform: uppercase; letter-spacing: 1px; padding: 10px 16px; background: transparent; border: none; border-bottom: 2px solid transparent; margin-bottom: -2px; cursor: pointer; color: var(--ink-faint); font-weight: 500; transition: all .14s; }
   .tab:hover { color: var(--ink-soft); }
   .tab.active { color: var(--brass-deep); border-bottom-color: var(--brass); }
 
+  /* ---------- table ---------- */
   .ledger-wrap { background: var(--paper-card); border: 1px solid var(--paper-line); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
   .toolbar { display: flex; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--paper-line); align-items: center; flex-wrap: wrap; }
   .search { flex: 1; min-width: 180px; position: relative; }
@@ -183,9 +191,11 @@
   .row-act { color: var(--ink-faint); cursor: pointer; padding: 4px; border-radius: 3px; }
   .row-act:hover { color: var(--red); background: var(--red-bg); }
 
+  /* ---------- empty ---------- */
   .empty { text-align: center; padding: 60px 20px; color: var(--ink-faint); }
   .empty .serif { font-size: 20px; color: var(--ink-soft); margin-bottom: 6px; }
 
+  /* ---------- modal ---------- */
   .overlay { position: fixed; inset: 0; background: rgba(26,23,20,.45); backdrop-filter: blur(2px); z-index: 60; display: flex; align-items: flex-start; justify-content: center; padding: 40px 18px; overflow-y: auto; }
   .modal { background: var(--paper-card); border-radius: var(--radius); box-shadow: 0 20px 60px rgba(0,0,0,.3); width: 100%; max-width: 540px; border: 1px solid var(--paper-line); overflow: hidden; }
   .modal-head { padding: 20px 24px; border-bottom: 1px solid var(--paper-line); display:flex; justify-content:space-between; align-items:center; }
@@ -219,6 +229,7 @@
   .banner b { color: var(--amber-tx); }
   .banner .lnk { color: var(--brass-deep); text-decoration: underline; cursor: pointer; font-weight:500; }
 
+  /* ---------- password gate ---------- */
   .gate {
     position: fixed; inset: 0; z-index: 100; background: var(--ink);
     display: flex; align-items: center; justify-content: center; padding: 24px;
@@ -241,6 +252,61 @@
   .gate-btn { width: 100%; justify-content: center; margin-top: 14px; padding: 11px; }
   .gate-err { color: var(--red); font-size: 13px; margin-top: 14px; font-family:'JetBrains Mono'; }
 
+  /* ---------- controls row (date range + export) ---------- */
+  .controls-row { display:flex; align-items:center; gap:10px; margin-bottom:22px; flex-wrap:wrap; }
+  .range-pills { display:inline-flex; gap:4px; background:var(--paper-card); border:1px solid var(--paper-line); border-radius:999px; padding:3px; }
+  .range-pill { font-family:'JetBrains Mono',monospace; font-size:11.5px; text-transform:uppercase; letter-spacing:.8px; padding:6px 13px; border:none; background:transparent; border-radius:999px; cursor:pointer; color:var(--ink-faint); font-weight:500; transition:all .14s; }
+  .range-pill:hover { color:var(--ink-soft); }
+  .range-pill.active { background:var(--brass); color:#fff; }
+  .custom-range { display:inline-flex; align-items:center; gap:8px; }
+
+  /* ---------- alert panel (due/overdue) ---------- */
+  .alert-panel { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:30px; }
+  .alert-block { background:var(--paper-card); border:1px solid var(--paper-line); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
+  .alert-block.overdue { border-left:3px solid var(--red); }
+  .alert-block.soon { border-left:3px solid var(--amber-tx); }
+  .alert-head { font-family:'JetBrains Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:1px; font-weight:600; padding:13px 16px; border-bottom:1px solid var(--paper-line); display:flex; align-items:center; gap:8px; }
+  .alert-block.overdue .alert-head { color:var(--red); }
+  .alert-block.soon .alert-head { color:var(--amber-tx); }
+  .alert-head .ic { width:15px; height:15px; }
+  .alert-item { display:grid; grid-template-columns:1.3fr 1fr auto auto; gap:10px; align-items:center; padding:10px 16px; border-bottom:1px solid var(--paper-line); cursor:pointer; font-size:13.5px; transition:background .1s; }
+  .alert-item:last-child { border-bottom:none; }
+  .alert-item:hover { background:#f6f1e6; }
+  .ai-vendor { font-weight:500; }
+  .ai-site { color:var(--ink-faint); font-size:12px; }
+  .ai-amt { font-weight:600; }
+  .ai-date { font-size:12.5px; }
+  .alert-more { padding:9px 16px; font-size:12px; color:var(--ink-faint); font-family:'JetBrains Mono'; }
+
+  /* ---------- sortable headers ---------- */
+  th.sortable { cursor:pointer; user-select:none; white-space:nowrap; }
+  th.sortable:hover { color:var(--brass-deep); }
+
+  /* ---------- reports ---------- */
+  .report-card { background:var(--paper-card); border:1px solid var(--paper-line); border-radius:var(--radius); box-shadow:var(--shadow); padding:20px 22px; margin-bottom:20px; overflow:hidden; }
+  .report-card .sec-head { margin-bottom:18px; }
+  .report-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .pl-chart { display:flex; gap:14px; align-items:flex-end; min-height:180px; padding:10px 4px 0; overflow-x:auto; }
+  .pl-month { display:flex; flex-direction:column; align-items:center; gap:6px; min-width:54px; flex:1; }
+  .pl-bars { display:flex; gap:4px; align-items:flex-end; height:140px; }
+  .pl-bar { width:16px; border-radius:2px 2px 0 0; min-height:2px; transition:height .3s; }
+  .pl-bar.inc { background:var(--green); }
+  .pl-bar.exp { background:var(--brass); }
+  .pl-label { font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.5px; }
+  .pl-net { font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; }
+  .pl-legend { display:flex; gap:18px; margin-top:14px; padding-top:14px; border-top:1px solid var(--paper-line); font-size:12px; color:var(--ink-soft); }
+  .pl-legend span { display:inline-flex; align-items:center; gap:6px; }
+  .pl-legend .sw { width:11px; height:11px; border-radius:2px; display:inline-block; }
+  .pl-legend .sw.inc { background:var(--green); }
+  .pl-legend .sw.exp { background:var(--brass); }
+  .cat-row { display:grid; grid-template-columns:1fr auto; gap:4px 10px; margin-bottom:14px; align-items:center; }
+  .cat-row-top { grid-column:1/2; display:flex; justify-content:space-between; font-size:13.5px; }
+  .cat-row-top .num { font-weight:600; }
+  .cat-track { grid-column:1/2; height:8px; background:var(--paper-line); border-radius:4px; overflow:hidden; }
+  .cat-fill { height:100%; background:var(--brass); border-radius:4px; transition:width .3s; }
+  .cat-fill.inc { background:var(--green); }
+  .cat-pct { grid-column:2/3; grid-row:1/3; font-size:13px; color:var(--ink-faint); font-weight:600; align-self:center; min-width:38px; text-align:right; }
+
   @media (max-width: 760px) {
     .stats { grid-template-columns: 1fr 1fr; }
     .stat:nth-child(2) { border-right: none; }
@@ -252,6 +318,10 @@
     main { padding: 24px 16px 60px; }
     .col-hide { display: none; }
     .field.row2 { grid-template-columns: 1fr; }
+    .alert-panel { grid-template-columns: 1fr; }
+    .report-grid { grid-template-columns: 1fr; }
+    .alert-item { grid-template-columns: 1fr auto; }
+    .ai-site { display:none; }
   }
 </style>
 </head>
@@ -260,11 +330,12 @@
 <header>
   <div class="bar">
     <div class="logo" onclick="go('dashboard')">
-      <span class="mark">Neel<b>Associates</b></span>
+      <span class="mark">Neel Associates <b>Ledger</b></span>
       <span class="sub">Estate&nbsp;Books</span>
     </div>
     <div class="crumbs" id="crumbs"></div>
     <div class="spacer"></div>
+    <a class="navlink" id="navReports" onclick="go('reports')">Reports</a>
     <a class="navlink" id="navVendors" onclick="go('vendors')">Vendors</a>
     <div class="conn" id="connBtn" onclick="openConn()">
       <span class="dot" id="connDot"></span>
@@ -280,11 +351,14 @@
 <script>
 /* ============================================================
    CONFIG — paste your Supabase values here to go live.
+   Leave blank to run on in-browser demo data.
    ============================================================ */
-const SUPABASE_URL = "https://qmglwnxxavvefmzsbdal.supabase.co";
-const SUPABASE_KEY = "sb_publishable_-lsn287_j9UrnoVpO_GGNg_oOM-Bi8h";
+const SUPABASE_URL = "https://qmglwnxxavvefmzsbdal.supabase.co";      // e.g. https://abcd1234.supabase.co
+const SUPABASE_KEY = "sb_publishable_-lsn287_j9UrnoVpO_GGNg_oOM-Bi8h";      // your anon/public key
 
-/* ---- Simple password gate. Change this to your own password. ---- */
+/* ---- Simple password gate. Change this to whatever you want. ----
+   Leave as "" to disable the gate entirely. Note: this keeps casual
+   visitors out, but is not strong security on its own.            */
 const APP_PASSWORD = "neel";
 /* ============================================================ */
 
@@ -299,6 +373,54 @@ const today = () => new Date().toISOString().slice(0,10);
 const dfmt = d => d ? new Date(d+"T00:00:00").toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}) : "—";
 const uid = () => Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 
+/* ---------- date-range filtering ---------- */
+let dateRange = "all"; // all | month | quarter | year | custom
+let customFrom = "", customTo = "";
+function rangeBounds(){
+  const now = new Date();
+  const y = now.getFullYear(), m = now.getMonth();
+  if(dateRange==="month") return [new Date(y,m,1), new Date(y,m+1,0)];
+  if(dateRange==="quarter"){ const q=Math.floor(m/3); return [new Date(y,q*3,1), new Date(y,q*3+3,0)]; }
+  if(dateRange==="year") return [new Date(y,0,1), new Date(y,11,31)];
+  if(dateRange==="custom"){ return [customFrom?new Date(customFrom):null, customTo?new Date(customTo):null]; }
+  return [null,null];
+}
+function inRange(dateStr){
+  if(dateRange==="all") return true;
+  if(!dateStr) return false;
+  const [from,to] = rangeBounds();
+  const d = new Date(dateStr+"T00:00:00");
+  if(from && d < from) return false;
+  if(to && d > new Date(to.getFullYear(),to.getMonth(),to.getDate(),23,59,59)) return false;
+  return true;
+}
+const rangeLabel = () => ({all:"All time",month:"This month",quarter:"This quarter",year:"This year",custom:"Custom range"}[dateRange]);
+// filtered views respecting the active date range
+const billsInRange = () => BILLS.filter(b=>inRange(b.issue_date));
+const incomeInRange = () => INCOME.filter(i=>inRange(i.received_date));
+
+/* ---------- CSV export ---------- */
+function downloadCSV(filename, rows){
+  const esc = v => { v=(v==null?"":String(v)); return /[",\n]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v; };
+  const csv = rows.map(r=>r.map(esc).join(",")).join("\n");
+  const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename; a.click();
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+}
+function exportBillsCSV(){
+  const rows = [["Site","Vendor","Category","Amount","Issued","Due","Status","Notes"]];
+  billsInRange().forEach(b=> rows.push([siteById(b.site_id)?.name||"", b.vendor, b.category, b.amount, b.issue_date, b.due_date, b.status, b.notes||""]));
+  downloadCSV(`neel-expenses-${dateRange}-${today()}.csv`, rows);
+}
+function exportIncomeCSV(){
+  const rows = [["Site","Source","Category","Amount","Received","Notes"]];
+  incomeInRange().forEach(i=> rows.push([siteById(i.site_id)?.name||"", i.source, i.category, i.amount, i.received_date, i.notes||""]));
+  downloadCSV(`neel-income-${dateRange}-${today()}.csv`, rows);
+}
+
+/* ---------- demo store (in-memory; swapped for Supabase when LIVE) ---------- */
 let SITES = [
   { id:"s1", name:"Maple Court Apartments", location:"Philadelphia, PA" },
   { id:"s2", name:"Riverside Duplex", location:"Camden, NJ" },
@@ -336,9 +458,11 @@ const SITE_PHOTOS = [
 ];
 const photoFor = (idx) => SITE_PHOTOS[idx % SITE_PHOTOS.length];
 
+/* ---------- navigation ---------- */
 let view = { name:"dashboard", siteId:null };
 function go(name, siteId=null){ view={name,siteId}; render(); window.scrollTo(0,0); }
 
+/* ---------- derived ---------- */
 const billsFor = sid => BILLS.filter(b=>b.site_id===sid);
 const incomeFor = sid => INCOME.filter(i=>i.site_id===sid);
 const siteTotal = sid => billsFor(sid).reduce((s,b)=>s+Number(b.amount),0);
@@ -346,12 +470,14 @@ const siteIncome = sid => incomeFor(sid).reduce((s,i)=>s+Number(i.amount),0);
 const siteUnpaid = sid => billsFor(sid).filter(b=>b.status==="unpaid").reduce((s,b)=>s+Number(b.amount),0);
 const siteById = id => SITES.find(s=>s.id===id);
 
+/* ---------- render ---------- */
 const app = document.getElementById("app");
 function render(){
   renderCrumbs();
   if(view.name==="dashboard") renderDashboard();
   else if(view.name==="site") renderSite();
   else if(view.name==="vendors") renderVendors();
+  else if(view.name==="reports") renderReports();
 }
 
 function renderCrumbs(){
@@ -361,17 +487,28 @@ function renderCrumbs(){
     c.innerHTML = `<a onclick="go('dashboard')">All sites</a><span class="sep">/</span><span>${esc(s?s.name:"")}</span>`;
   } else if(view.name==="vendors"){
     c.innerHTML = `<a onclick="go('dashboard')">All sites</a><span class="sep">/</span><span>Vendors</span>`;
+  } else if(view.name==="reports"){
+    c.innerHTML = `<a onclick="go('dashboard')">All sites</a><span class="sep">/</span><span>Reports</span>`;
   } else c.innerHTML = "";
   const nv = document.getElementById('navVendors');
   if(nv) nv.classList.toggle('active', view.name==="vendors");
+  const nr = document.getElementById('navReports');
+  if(nr) nr.classList.toggle('active', view.name==="reports");
 }
 
 function renderDashboard(){
-  const expense = BILLS.reduce((s,b)=>s+Number(b.amount),0);
-  const income = INCOME.reduce((s,i)=>s+Number(i.amount),0);
+  const fb = billsInRange(), fi = incomeInRange();
+  const expense = fb.reduce((s,b)=>s+Number(b.amount),0);
+  const income = fi.reduce((s,i)=>s+Number(i.amount),0);
   const due = BILLS.filter(b=>b.status==="unpaid").reduce((s,b)=>s+Number(b.amount),0);
   const net = income - expense;
-  const overdue = BILLS.filter(b=>b.status==="unpaid" && b.due_date < today());
+  const overdueList = BILLS.filter(b=>b.status==="unpaid" && b.due_date && b.due_date < today())
+    .sort((a,b)=>(a.due_date||"").localeCompare(b.due_date||""));
+  const soonList = BILLS.filter(b=>{
+    if(b.status!=="unpaid" || !b.due_date) return false;
+    const d=new Date(b.due_date+"T00:00:00"), now=new Date(today()+"T00:00:00");
+    const days=(d-now)/86400000; return days>=0 && days<=7;
+  }).sort((a,b)=>(a.due_date||"").localeCompare(b.due_date||""));
 
   app.innerHTML = `
     ${LIVE ? "" : demoBanner()}
@@ -384,12 +521,41 @@ function renderDashboard(){
       <button class="btn btn-primary" onclick="openSiteModal()">${icon('plus')} New site</button>
     </div>
 
-    <div class="stats">
-      <div class="stat"><div class="k">Total income</div><div class="v paid num">${fmt(income)}</div><div class="meta">${INCOME.length} entries</div></div>
-      <div class="stat"><div class="k">Total expenditure</div><div class="v due num">${fmt(expense)}</div><div class="meta">${BILLS.length} bills</div></div>
-      <div class="stat"><div class="k">Net</div><div class="v num" style="color:${net>=0?'var(--green)':'var(--red)'}">${net<0?'−':''}${fmt(Math.abs(net))}</div><div class="meta">income − expenses</div></div>
-      <div class="stat"><div class="k">Left to pay</div><div class="v due num">${fmt(due)}</div><div class="meta">${overdue.length} overdue</div></div>
+    <div class="controls-row">
+      <div class="range-pills">
+        ${["all","month","quarter","year"].map(r=>`<button class="range-pill ${dateRange===r?'active':''}" onclick="setRange('${r}')">${({all:'All time',month:'Month',quarter:'Quarter',year:'Year'})[r]}</button>`).join('')}
+        <button class="range-pill ${dateRange==='custom'?'active':''}" onclick="setRange('custom')">Custom</button>
+      </div>
+      ${dateRange==='custom' ? `<div class="custom-range">
+        <input type="date" class="filter" value="${customFrom}" onchange="customFrom=this.value;renderDashboard()" />
+        <span style="color:var(--ink-faint)">→</span>
+        <input type="date" class="filter" value="${customTo}" onchange="customTo=this.value;renderDashboard()" />
+      </div>` : ''}
+      <div class="spacer"></div>
+      <button class="btn btn-ghost btn-sm" onclick="exportBillsCSV()">${icon('download')} Expenses CSV</button>
+      <button class="btn btn-ghost btn-sm" onclick="exportIncomeCSV()">${icon('download')} Income CSV</button>
     </div>
+
+    <div class="stats">
+      <div class="stat"><div class="k">Total income</div><div class="v paid num">${fmt(income)}</div><div class="meta">${fi.length} entries · ${rangeLabel()}</div></div>
+      <div class="stat"><div class="k">Total expenditure</div><div class="v due num">${fmt(expense)}</div><div class="meta">${fb.length} bills · ${rangeLabel()}</div></div>
+      <div class="stat"><div class="k">Net</div><div class="v num" style="color:${net>=0?'var(--green)':'var(--red)'}">${net<0?'−':''}${fmt(Math.abs(net))}</div><div class="meta">income − expenses</div></div>
+      <div class="stat"><div class="k">Left to pay</div><div class="v due num">${fmt(due)}</div><div class="meta">all-time outstanding</div></div>
+    </div>
+
+    ${(overdueList.length||soonList.length) ? `
+    <div class="alert-panel">
+      ${overdueList.length ? `<div class="alert-block overdue">
+        <div class="alert-head">${icon('alert')} ${overdueList.length} overdue</div>
+        ${overdueList.slice(0,5).map(b=>alertRow(b,true)).join('')}
+        ${overdueList.length>5?`<div class="alert-more">+${overdueList.length-5} more overdue</div>`:''}
+      </div>`:''}
+      ${soonList.length ? `<div class="alert-block soon">
+        <div class="alert-head">${icon('clock')} ${soonList.length} due within 7 days</div>
+        ${soonList.slice(0,5).map(b=>alertRow(b,false)).join('')}
+        ${soonList.length>5?`<div class="alert-more">+${soonList.length-5} more soon</div>`:''}
+      </div>`:''}
+    </div>` : ''}
 
     <div class="sec-head"><h2>Properties</h2><span class="count">${SITES.length} active</span></div>
     <div class="grid">
@@ -397,6 +563,15 @@ function renderDashboard(){
       <div class="add-site" onclick="openSiteModal()"><div class="plus">+</div><div>Add a property</div></div>
     </div>
   `;
+}
+function setRange(r){ dateRange=r; renderDashboard(); }
+function alertRow(b, isOverdue){
+  return `<div class="alert-item" onclick="go('site','${b.site_id}')">
+    <span class="ai-vendor">${esc(b.vendor)}</span>
+    <span class="ai-site">${esc(siteById(b.site_id)?.name||'')}</span>
+    <span class="ai-amt num">${fmt(b.amount)}</span>
+    <span class="ai-date num" style="color:${isOverdue?'var(--red)':'var(--amber-tx)'}">${dfmt(b.due_date)}</span>
+  </div>`;
 }
 
 function siteCard(s, idx){
@@ -416,7 +591,11 @@ function siteCard(s, idx){
     </div>
   </div>`;
 }
+
 let siteSearch="", siteFilter="all", siteTab="bills";
+let billSort={key:"issue_date",dir:-1};
+function setBillSort(k){ if(billSort.key===k) billSort.dir*=-1; else billSort={key:k,dir:1}; renderSite(); }
+function sortArrow(k){ return billSort.key===k ? (billSort.dir>0?" ▲":" ▼") : ""; }
 function renderSite(){
   const s = siteById(view.siteId);
   if(!s){ go('dashboard'); return; }
@@ -446,11 +625,19 @@ function renderSite(){
   `;
 }
 
+function sortBills(rows){
+  const k=billSort.key, dir=billSort.dir;
+  return rows.slice().sort((a,b)=>{
+    let av=a[k], bv=b[k];
+    if(k==="amount"){ av=Number(av); bv=Number(bv); return (av-bv)*dir; }
+    return String(av||"").localeCompare(String(bv||""))*dir;
+  });
+}
 function renderBillsTable(s){
   let rows = billsFor(s.id);
   if(siteFilter!=="all") rows = rows.filter(b=> siteFilter==="unpaid"?b.status==="unpaid":b.status==="paid");
   if(siteSearch) { const q=siteSearch.toLowerCase(); rows = rows.filter(b=> (b.vendor+b.category+b.notes).toLowerCase().includes(q)); }
-  rows = rows.slice().sort((a,b)=> (b.issue_date||"").localeCompare(a.issue_date||""));
+  rows = sortBills(rows);
   return `
     <div class="ledger-wrap">
       <div class="toolbar">
@@ -464,8 +651,13 @@ function renderBillsTable(s){
       ${rows.length ? `
       <table>
         <thead><tr>
-          <th>Vendor</th><th class="col-hide">Category</th><th>Issued</th><th class="col-hide">Due</th>
-          <th class="r">Amount</th><th>Status</th><th class="col-hide">Bill</th><th></th>
+          <th class="sortable" onclick="setBillSort('vendor')">Vendor${sortArrow('vendor')}</th>
+          <th class="col-hide sortable" onclick="setBillSort('category')">Category${sortArrow('category')}</th>
+          <th class="sortable" onclick="setBillSort('issue_date')">Issued${sortArrow('issue_date')}</th>
+          <th class="col-hide sortable" onclick="setBillSort('due_date')">Due${sortArrow('due_date')}</th>
+          <th class="r sortable" onclick="setBillSort('amount')">Amount${sortArrow('amount')}</th>
+          <th class="sortable" onclick="setBillSort('status')">Status${sortArrow('status')}</th>
+          <th class="col-hide">Bill</th><th></th>
         </tr></thead>
         <tbody>${rows.map(billRow).join("")}</tbody>
       </table>` : `<div class="empty"><div class="serif">No bills here yet</div><div>Add the first bill for this property.</div></div>`}
@@ -511,6 +703,7 @@ function billRow(b){
   </tr>`;
 }
 
+/* ---------- actions ---------- */
 async function toggleStatus(id){
   const b = BILLS.find(x=>x.id===id); if(!b) return;
   b.status = b.status==="paid"?"unpaid":"paid";
@@ -527,10 +720,12 @@ async function delBill(id){
 async function openPdf(id){
   const b = BILLS.find(x=>x.id===id);
   if(!b) return;
+  // Live: get a public URL from Supabase storage
   if(LIVE && b.pdf_path){
     const { data } = sb.storage.from('bills').getPublicUrl(b.pdf_path);
     if(data && data.publicUrl){ openViewer(data.publicUrl, b.pdf_kind, b.pdf_name); return; }
   }
+  // Demo / in-memory
   if(b._pdfData){ openViewer(b._pdfData, b.pdf_kind, b.pdf_name); return; }
   alert("In demo mode this is a placeholder.\nFile on record: "+(b.pdf_name||"none")+"\n\nWhen connected to Supabase, the actual file opens here.");
 }
@@ -544,6 +739,7 @@ function openViewer(url, kind, name){
   w.document.write(`<title>${esc(name||'Bill')}</title><body style="margin:0;background:#1a1714">${body}</body>`);
 }
 
+/* ---------- modals ---------- */
 const mRoot = document.getElementById("modalRoot");
 function closeModal(){ mRoot.innerHTML=""; }
 function openSiteModal(id=null){
@@ -612,7 +808,8 @@ function openBillModal(siteId, billId=null){
       </div>
     </div></div>`;
   setTimeout(()=>document.getElementById('bVendor').focus(),50);
-}async function handlePdf(inp){
+}
+async function handlePdf(inp){
   let f = inp.files[0]; if(!f) return;
   const name = f.name.toLowerCase();
   const isHeic = f.type==="image/heic" || f.type==="image/heif" || name.endsWith(".heic") || name.endsWith(".heif");
@@ -623,6 +820,7 @@ function openBillModal(siteId, billId=null){
   const drop = document.getElementById('drop');
   const txt = document.getElementById('dropTxt');
 
+  // HEIC -> JPG conversion (iPhone photos don't display in most browsers)
   if(isHeic){
     txt.innerHTML = "Converting iPhone photo…";
     try {
@@ -648,7 +846,7 @@ function openBillModal(siteId, billId=null){
   drop.classList.add('has');
   txt.innerHTML = icon('file')+' '+esc(f.name);
 }
-  async function compressImage(file, maxW=1600, quality=0.7){
+async function compressImage(file, maxW=1600, quality=0.7){
   const dataUrl = await new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(file); });
   const img = await new Promise((res,rej)=>{ const im=new Image(); im.onload=()=>res(im); im.onerror=rej; im.src=dataUrl; });
   let { width, height } = img;
@@ -657,9 +855,10 @@ function openBillModal(siteId, billId=null){
   canvas.width = width; canvas.height = height;
   canvas.getContext('2d').drawImage(img, 0, 0, width, height);
   const blob = await new Promise(res => canvas.toBlob(res, 'image/jpeg', quality));
-  if(!blob || blob.size >= file.size) return file; // keep original if compression didn't help
+  if(!blob || blob.size >= file.size) return file;
   return new File([blob], file.name.replace(/\.(png|heic|heif|webp)$/i,'.jpg'), { type:'image/jpeg' });
 }
+
 async function saveBill(siteId, billId){
   const vendor=document.getElementById('bVendor').value.trim();
   const amount=parseFloat(document.getElementById('bAmount').value)||0;
@@ -674,6 +873,7 @@ async function saveBill(siteId, billId){
     notes:document.getElementById('bNotes').value.trim(),
   };
 
+  // Upload attachment to Supabase storage if one was added
   let uploadedPath = null;
   if(pendingPdf){
     rec.pdf_name = pendingPdf.name;
@@ -753,6 +953,7 @@ async function delIncome(id){
 /* ---------- vendors page (all sites) ---------- */
 let vendorSearch="";
 function renderVendors(){
+  // group bills by vendor across all sites
   const map = {};
   BILLS.forEach(b=>{
     const v = b.vendor||"(no vendor)";
@@ -816,6 +1017,130 @@ function renderVendors(){
 let expandedVendor=null;
 function toggleVendor(v){ expandedVendor = expandedVendor===v?null:v; renderVendors(); }
 
+/* ---------- reports page ---------- */
+let reportSite = "all";
+function renderReports(){
+  const fb = billsInRange().filter(b=> reportSite==="all"||b.site_id===reportSite);
+  const fi = incomeInRange().filter(i=> reportSite==="all"||i.site_id===reportSite);
+  const totExp = fb.reduce((a,b)=>a+Number(b.amount),0);
+  const totInc = fi.reduce((a,i)=>a+Number(i.amount),0);
+
+  // monthly P&L
+  const months = {};
+  const mk = d => (d||"").slice(0,7);
+  fi.forEach(i=>{ const k=mk(i.received_date); if(k){(months[k]=months[k]||{inc:0,exp:0}).inc+=Number(i.amount);} });
+  fb.forEach(b=>{ const k=mk(b.issue_date); if(k){(months[k]=months[k]||{inc:0,exp:0}).exp+=Number(b.amount);} });
+  const monthKeys = Object.keys(months).sort();
+  const maxMonth = Math.max(1, ...monthKeys.map(k=>Math.max(months[k].inc,months[k].exp)));
+
+  // category breakdown (expenses)
+  const cats = {};
+  fb.forEach(b=>{ const c=b.category||"Other"; cats[c]=(cats[c]||0)+Number(b.amount); });
+  const catArr = Object.entries(cats).sort((a,b)=>b[1]-a[1]);
+  const maxCat = Math.max(1, ...catArr.map(c=>c[1]));
+
+  // income category breakdown
+  const icats = {};
+  fi.forEach(i=>{ const c=i.category||"Other"; icats[c]=(icats[c]||0)+Number(i.amount); });
+  const icatArr = Object.entries(icats).sort((a,b)=>b[1]-a[1]);
+
+  const monthName = k => { const [y,m]=k.split("-"); return new Date(y,m-1,1).toLocaleDateString("en-US",{month:"short",year:"2-digit"}); };
+
+  app.innerHTML = `
+    <div class="page-head">
+      <div>
+        <div class="eyebrow">Income vs expenses</div>
+        <h1 class="title">Reports</h1>
+        <div class="lede">Profit &amp; loss, spending by category, and a tax-ready summary.</div>
+      </div>
+    </div>
+
+    <div class="controls-row">
+      <div class="range-pills">
+        ${["all","month","quarter","year"].map(r=>`<button class="range-pill ${dateRange===r?'active':''}" onclick="dateRange='${r}';renderReports()">${({all:'All time',month:'Month',quarter:'Quarter',year:'Year'})[r]}</button>`).join('')}
+      </div>
+      <select class="filter" onchange="reportSite=this.value;renderReports()">
+        <option value="all"${reportSite==='all'?' selected':''}>All properties</option>
+        ${SITES.map(st=>`<option value="${st.id}"${reportSite===st.id?' selected':''}>${esc(st.name)}</option>`).join('')}
+      </select>
+      <div class="spacer"></div>
+      <button class="btn btn-ghost btn-sm" onclick="exportBillsCSV()">${icon('download')} Expenses CSV</button>
+    </div>
+
+    <div class="stats" style="grid-template-columns:repeat(3,1fr)">
+      <div class="stat"><div class="k">Income</div><div class="v paid num">${fmt(totInc)}</div><div class="meta">${rangeLabel()}</div></div>
+      <div class="stat"><div class="k">Expenses</div><div class="v due num">${fmt(totExp)}</div><div class="meta">${rangeLabel()}</div></div>
+      <div class="stat"><div class="k">Net profit</div><div class="v num" style="color:${totInc-totExp>=0?'var(--green)':'var(--red)'}">${totInc-totExp<0?'−':''}${fmt(Math.abs(totInc-totExp))}</div><div class="meta">income − expenses</div></div>
+    </div>
+
+    <div class="report-card">
+      <div class="sec-head"><h2>Monthly profit &amp; loss</h2><span class="count">${monthKeys.length} months</span></div>
+      ${monthKeys.length ? `<div class="pl-chart">
+        ${monthKeys.map(k=>{
+          const mo=months[k]; const net=mo.inc-mo.exp;
+          return `<div class="pl-month">
+            <div class="pl-bars">
+              <div class="pl-bar inc" style="height:${Math.round(mo.inc/maxMonth*100)}%" title="Income ${fmt(mo.inc)}"></div>
+              <div class="pl-bar exp" style="height:${Math.round(mo.exp/maxMonth*100)}%" title="Expenses ${fmt(mo.exp)}"></div>
+            </div>
+            <div class="pl-label">${monthName(k)}</div>
+            <div class="pl-net num" style="color:${net>=0?'var(--green)':'var(--red)'}">${net<0?'−':''}${fmtK(Math.abs(net))}</div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div class="pl-legend"><span><i class="sw inc"></i>Income</span><span><i class="sw exp"></i>Expenses</span></div>
+      ` : `<div class="empty"><div>No data in this range.</div></div>`}
+    </div>
+
+    <div class="report-grid">
+      <div class="report-card">
+        <div class="sec-head"><h2>Where money goes</h2></div>
+        ${catArr.length ? catArr.map(([c,v])=>`
+          <div class="cat-row">
+            <div class="cat-row-top"><span>${esc(c)}</span><span class="num">${fmt(v)}</span></div>
+            <div class="cat-track"><div class="cat-fill" style="width:${Math.round(v/maxCat*100)}%"></div></div>
+            <div class="cat-pct num">${Math.round(v/totExp*100)||0}%</div>
+          </div>`).join('') : `<div class="empty"><div>No expenses in this range.</div></div>`}
+      </div>
+
+      <div class="report-card">
+        <div class="sec-head"><h2>Income by type</h2></div>
+        ${icatArr.length ? icatArr.map(([c,v])=>`
+          <div class="cat-row">
+            <div class="cat-row-top"><span>${esc(c)}</span><span class="num">${fmt(v)}</span></div>
+            <div class="cat-track"><div class="cat-fill inc" style="width:${Math.round(v/Math.max(1,icatArr[0][1])*100)}%"></div></div>
+            <div class="cat-pct num">${Math.round(v/totInc*100)||0}%</div>
+          </div>`).join('') : `<div class="empty"><div>No income in this range.</div></div>`}
+      </div>
+    </div>
+
+    <div class="report-card">
+      <div class="sec-head"><h2>Tax summary</h2><button class="btn btn-ghost btn-sm" onclick="exportTaxCSV()">${icon('download')} Export</button></div>
+      <table>
+        <thead><tr><th>Category</th><th class="r">Total</th><th class="col-hide r">% of expenses</th></tr></thead>
+        <tbody>
+          ${catArr.map(([c,v])=>`<tr><td>${esc(c)}</td><td class="amt">${fmt(v)}</td><td class="col-hide amt" style="color:var(--ink-faint)">${Math.round(v/totExp*100)||0}%</td></tr>`).join('')}
+          <tr style="border-top:2px solid var(--rule)"><td style="font-weight:600">Total deductible expenses</td><td class="amt" style="color:var(--red)">${fmt(totExp)}</td><td class="col-hide"></td></tr>
+          <tr><td style="font-weight:600">Total income</td><td class="amt" style="color:var(--green)">${fmt(totInc)}</td><td class="col-hide"></td></tr>
+          <tr><td style="font-weight:600">Net taxable</td><td class="amt" style="color:${totInc-totExp>=0?'var(--green)':'var(--red)'}">${totInc-totExp<0?'−':''}${fmt(Math.abs(totInc-totExp))}</td><td class="col-hide"></td></tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+function exportTaxCSV(){
+  const fb = billsInRange().filter(b=> reportSite==="all"||b.site_id===reportSite);
+  const fi = incomeInRange().filter(i=> reportSite==="all"||i.site_id===reportSite);
+  const cats={}; fb.forEach(b=>{ const c=b.category||"Other"; cats[c]=(cats[c]||0)+Number(b.amount); });
+  const totExp=fb.reduce((a,b)=>a+Number(b.amount),0), totInc=fi.reduce((a,i)=>a+Number(i.amount),0);
+  const rows=[["Category","Total"]];
+  Object.entries(cats).sort((a,b)=>b[1]-a[1]).forEach(([c,v])=>rows.push([c,v.toFixed(2)]));
+  rows.push(["Total expenses",totExp.toFixed(2)]);
+  rows.push(["Total income",totInc.toFixed(2)]);
+  rows.push(["Net taxable",(totInc-totExp).toFixed(2)]);
+  downloadCSV(`neel-tax-summary-${dateRange}-${today()}.csv`, rows);
+}
+
 /* ---------- connection panel ---------- */
 function openConn(){
   mRoot.innerHTML = `<div class="overlay" onclick="if(event.target===this)closeModal()">
@@ -851,6 +1176,8 @@ function icon(n){
     edit:'<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"/>',
     trash:'<path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>',
     info:'<circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/>',
+    download:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>',
+    alert:'<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',
   }[n]||'';
   return `<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
 }
@@ -875,7 +1202,7 @@ async function boot(){
 function lockScreen(msg){
   document.getElementById('gate').innerHTML = `
     <div class="gate-card">
-      <div class="gate-mark">Led<b>ger</b></div>
+      <div class="gate-mark">Neel Associates <b>Ledger</b></div>
       <div class="gate-sub">Estate Books</div>
       <input type="password" id="gatePw" class="gate-in" placeholder="Enter password" autocomplete="current-password"
         onkeydown="if(event.key==='Enter')tryUnlock()" />
